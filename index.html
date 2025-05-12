@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitaResposta</title>
+  <style>
+    /* Seus estilos CSS aqui */
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to right, #f9d423, #ff4e50);
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #e74c3c;
+    }
+    .subtitle {
+      font-size: 1.3rem;
+      color: #3498db;
+      margin-bottom: 20px;
+    }
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      padding: 10px;
+      width: 80%;
+      border: 2px solid #e74c3c;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #e74c3c;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #c0392b;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    #restartBtn, #giveUpBtn, #noSenseBtn, #secondChanceBtn, #skipBtn {
+      display: none;
+      background-color: #3498db;
+    }
+    #skipBtn {
+      background-color: #27ae60;
+    }
+    #hintBtn {
+      background-color: #f39c12;
+    }
+    .hint-text {
+      color: #f39c12;
+      font-style: italic;
+      margin: 10px 0;
+    }
+    .score {
+      margin: 10px 0;
+      font-size: 1.1rem;
+      color: #e74c3c;
+    }
+    .player-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .player {
+      flex: 1;
+      border: 2px solid #3498db;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 0 5px;
+      background-color: #f8f9fa;
+    }
+    .active-player {
+      border: 2px solid #e74c3c;
+      background-color: #fff8e1;
+    }
+    .player-name {
+      font-weight: bold;
+      color: #3498db;
+      margin-bottom: 5px;
+    }
+    .player-score {
+      color: #e74c3c;
+      font-size: 1.1rem;
+    }
+    #gameModeBtns {
+      margin-bottom: 20px;
+    }
+    #difficultyBtns {
+      margin-bottom: 20px;
+      display: none;
+    }
+    .difficulty-btn {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    #easyBtn {
+      background-color: #2ecc71;
+      color: white;
+    }
+    #mediumBtn {
+      background-color: #f1c40f;
+      color: white;
+    }
+    #hardBtn {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .difficulty-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .difficulty-indicator {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 10px 0;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .easy {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .medium {
+      background-color: #f1c40f;
+      color: white;
+    }
+    .hard {
+      background-color: #e74c3c;
+      color: white;
+    }
+    #duetoSetup, #player2Container {
+      display: none;
+    }
+    .winner {
+      color: #27ae60;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    #timer {
+      font-size: 1.2rem;
+      color: #e67e22;
+      margin: 10px 0;
+    }
+    #networkStatus {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-top: 15px;
+    }
+    .turn-indicator {
+      font-weight: bold;
+      color: #3498db;
+      margin: 10px 0;
+    }
+    #mainGameArea, #gameModeBtns {
+      transition: opacity 0.3s;
+    }
+    #offlineIndicator {
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: none;
+      margin: 10px auto;
+      width: fit-content;
+    }
+    #onlineIndicator {
+      background-color: #27ae60;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: none;
+      margin: 10px auto;
+      width: fit-content;
+    }
+    #authContainer {
+      margin-bottom: 20px;
+    }
+    #multiplayerBtns {
+      margin-bottom: 20px;
+      display: none;
+    }
+    .multiplayer-btn {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: #3498db;
+      color: white;
+    }
+    .multiplayer-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .room-code {
+      font-family: monospace;
+      font-size: 1.5rem;
+      padding: 10px;
+      background: #2c3e50;
+      color: white;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .room-input {
+      padding: 10px;
+      width: 200px;
+      font-size: 1.2rem;
+      text-align: center;
+      text-transform: uppercase;
+      border: 2px solid #3498db;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .room-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .copy-btn {
+      background-color: #2ecc71;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .copy-btn:hover {
+      background-color: #27ae60;
+    }
+    .room-status {
+      font-size: 1.1rem;
+      margin: 10px 0;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    .status-waiting {
+      background-color: #f1c40f;
+      color: white;
+    }
+    .status-playing {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .waiting-message {
+      color: #e74c3c;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .hint-level {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-top: 5px;
+    }
+    .player-notification {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      animation: fadeIn 0.5s;
+    }
+    .start-game-btn {
+      background-color: #27ae60;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      margin: 20px 0;
+      display: none;
+    }
+    .start-game-btn:hover {
+      background-color: #219a52;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .player-list {
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+    }
+    .player-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 5px 0;
+    }
+    .player-avatar {
+      width: 30px;
+      height: 30px;
+      background-color: #3498db;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CitaResposta 🤪</h1>
+
+    <div id="offlineIndicator">Modo Offline</div>
+    <div id="onlineIndicator">Modo Online</div>
+
+    <div id="gameModeBtns">
+      <button id="singlePlayerBtn">Modo Solo</button>
+      <button id="duetoBtn">Modo Dueto (1x1)</button>
+      <button id="multiplayerBtn">Modo Multiplayer</button>
+    </div>
+
+    <div id="difficultyBtns">
+      <div class="subtitle">Escolha o nível de dificuldade</div>
+      <button id="easyBtn" class="difficulty-btn">Fácil</button>
+      <button id="mediumBtn" class="difficulty-btn">Médio</button>
+      <button id="hardBtn" class="difficulty-btn">Difícil</button>
+    </div>
+
+    <div id="duetoSetup">
+      <div class="subtitle">Configuração do Modo Dueto</div>
+      <input type="text" id="player1Name" placeholder="Nome do Jogador 1" value="Jogador 1" />
+      <input type="text" id="player2Name" placeholder="Nome do Jogador 2" value="Jogador 2" />
+      <button id="startDuetoBtn">Iniciar Dueto</button>
+    </div>
+
+    <div id="multiplayerBtns">
+      <div class="subtitle">Escolha o tipo de conexão</div>
+      <button id="webMultiplayerBtn" class="multiplayer-btn">Multiplayer Web</button>
+      <button id="bluetoothMultiplayerBtn" class="multiplayer-btn">Bluetooth</button>
+      <button id="localMultiplayerBtn" class="multiplayer-btn">Local (Mesma Rede)</button>
+      
+      <div id="webMultiplayerOptions" style="display: none;">
+        <div class="subtitle">Escolha uma opção</div>
+        <div class="room-actions">
+          <button id="createRoomBtn" class="multiplayer-btn">Criar Sala</button>
+          <button id="enterRoomBtn" class="multiplayer-btn">Entrar em Sala</button>
+        </div>
+      </div>
+
+      <div id="roomCodeContainer" style="display: none;">
+        <div class="subtitle">Código da Sala</div>
+        <div id="roomCode" class="room-code"></div>
+        <div class="room-actions">
+          <button id="copyCodeBtn" class="copy-btn">
+            <span>📋</span> Copiar Código
+          </button>
+        </div>
+        <div id="playerList" class="player-list">
+          <div class="subtitle">Jogadores na Sala</div>
+          <div id="player1Item" class="player-item">
+            <div class="player-avatar">1</div>
+            <span>Você (Criador)</span>
+          </div>
+          <div id="player2Item" class="player-item" style="display: none;">
+            <div class="player-avatar">2</div>
+            <span id="player2Name">Aguardando jogador...</span>
+          </div>
+        </div>
+        <div id="waitingMessage" class="waiting-message">Aguardando oponente...</div>
+        <button id="startGameBtn" class="start-game-btn">Iniciar Jogo</button>
+      </div>
+
+      <div id="joinRoomContainer" style="display: none;">
+        <div class="subtitle">Entrar em uma Sala</div>
+        <input type="text" id="roomCodeInput" class="room-input" placeholder="Digite o código" maxlength="6" />
+        <div class="room-actions">
+          <button id="joinRoomBtn" class="multiplayer-btn">Entrar na Sala</button>
+          <button id="backToOptionsBtn" class="multiplayer-btn" style="background-color: #e74c3c;">Voltar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mainGameArea" style="display:none;">
+      <div id="player1Container" class="score">Pontuação: 0</div>
+
+      <div id="duetoInfo" style="display:none;">
+        <div class="player-container">
+          <div id="player1" class="player active-player">
+            <div id="player1NameDisplay" class="player-name">Jogador 1</div>
+            <div id="player1ScoreDisplay" class="player-score">0 pontos</div>
+          </div>
+          <div id="player2" class="player">
+            <div id="player2NameDisplay" class="player-name">Jogador 2</div>
+            <div id="player2ScoreDisplay" class="player-score">0 pontos</div>
+          </div>
+        </div>
+        <div id="turnIndicator" class="turn-indicator">Vez de: Jogador 1</div>
+        <div id="timer">Tempo: 30s</div>
+      </div>
+
+      <div class="question" id="question"></div>
+      <input type="text" id="answerInput" placeholder="Sua resposta aqui..." />
+      <br />
+      <button id="submitBtn">Responder</button>
+      <button id="restartBtn">Tentar Novamente</button>
+      <button id="giveUpBtn">Desisto</button>
+      <button id="noSenseBtn">Sem Sentido</button>
+      <button id="secondChanceBtn">Me Dá uma Chance</button>
+      <button id="skipBtn">Pular</button>
+      <button id="hintBtn">Dica</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div id="networkStatus"></div>
+  </div>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDonXj45fB7sRbg5S34uVgxJJT4H8beG0g",
+      authDomain: "citaresposta.firebaseapp.com",
+      projectId: "citaresposta",
+      storageBucket: "citaresposta.firebasestorage.app",
+      messagingSenderId: "843916427848",
+      appId: "1:843916427848:web:373500363f7c7d1766ce7d",
+      measurementId: "G-5ECLG79XGS"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Create a memory-based storage alternative
+    const memoryStorage = {
+      data: {},
+      setItem: function(key, value) {
+        this.data[key] = value;
+      },
+      getItem: function(key) {
+        return this.data[key] || null;
+      },
+      removeItem: function(key) {
+        delete this.data[key];
+      },
+      clear: function() {
+        this.data = {};
+      }
+    };
+
+    // Storage utility that tries localStorage first, falls back to memory storage
+    const safeStorage = {
+      setItem: function(key, value) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {
+          memoryStorage.setItem(key, value);
+        }
+      },
+      getItem: function(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return memoryStorage.getItem(key);
+        }
+      },
+      removeItem: function(key) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {
+          memoryStorage.removeItem(key);
+        }
+      },
+      clear: function() {
+        try {
+          localStorage.clear();
+        } catch (e) {
+          memoryStorage.clear();
+        }
+      }
+    };
+
+    const questions = [
+      {
+        q: "Qual o único estado brasileiro que não tem a letra A?",
+        a: ["sergipe"]
+      },
+      {
+        q: "Qual time não canta o cruzeiro do hino nacional?",
+        a: ["atletico-mg", "atlético mg", "atletico mg"]
+      },
+      {
+        q: "Qual país tem as duas primeiras letras que se remete a um som de lobo?",
+        a: ["austrália", "australia"]
+      },
+      {
+        q: "Qual o dedo que tem 4 irmão?",
+        a: ["o dedo do meio", "dedo do meio", "meio"]
+      },
+      {
+        q: "Qual estado brasileiro é conhecido por ter mais vacas do que pessoas?",
+        a: ["mato grosso"]
+      },
+      {
+        q: "O que é verde por fora, vermelho por dentro e anda sempre armado?",
+        a: ["melancia"]
+      },
+      {
+        q: "O que é que tem cabeça, tem dente, mas não é bicho nem é gente?",
+        a: ["alho"]
+      },
+      {
+        q: "O que o tomate disse para o outro na corrida?",
+        a: ["ketchup"]
+      },
+      {
+        q: "Por que o livro foi ao médico?",
+        a: ["porque estava com muitas páginas viradas"]
+      },
+      {
+        q: "Por que o lápis foi preso?",
+        a: ["porque ele escreveu uma coisa muito ruim"]
+      },
+      {
+        q: "Qual é o prato preferido do Batman?",
+        a: ["morcego frito"]
+      },
+      {
+        q: "Por que o computador foi ao médico?",
+        a: ["porque estava com vírus"]
+      },
+      {
+        q: "O que o pato disse para a pata?",
+        a: ["vamos sair de patinhas"]
+      },
+      {
+        q: "Qual é a fruta preferida do vampiro?",
+        a: ["morango sangrento"]
+      },
+      {
+        q: "Por que o espantalho ganhou um prêmio?",
+        a: ["porque ele era excepcional no campo"]
+      },
+      {
+        q: "O que a mina pira no parque de diversões?",
+        a: ["na montanha-russa"]
+      },
+      {
+        q: "Qual é o telefone do Batman?",
+        a: ["batfone"]
+      },
+      {
+        q: "O que o peixe faz quando sai da água?",
+        a: ["respira"]
+      },
+      {
+        q: "Qual é a dança que todo mundo sabe fazer?",
+        a: ["quadradinho de oito"]
+      },
+      {
+        q: "O que o gato disse para o rato?",
+        a: ["quem comeu meu queijo"]
+      },
+      {
+        q: "Por que os elefantes pintam as unhas do pé de rosa?",
+        a: ["para combinar com o papel de parede da selva"]
+      },
+      {
+        q: "O que o relógio de pulso disse para a torradeira?",
+        a: ["está na hora de torrar"]
+      },
+      {
+        q: "Qual é a cor do número 7?",
+        a: ["azul polca-dot"]
+      },
+      {
+        q: "Por que as nuvens usam óculos escuros?",
+        a: ["para se proteger do brilho do sol"]
+      },
+      {
+        q: "O que a lua disse para o queijo?",
+        a: ["você é o meu crescente favorito"]
+      },
+      {
+        q: "Qual é a capital da França?",
+        a: ["paris"]
+      },
+      {
+        q: "Quantos dias tem uma semana?",
+        a: ["7", "sete"]
+      },
+      {
+        q: "Qual é o maior planeta do sistema solar?",
+        a: ["júpiter"]
+      },
+      {
+        q: "Qual é o símbolo químico da água?",
+        a: ["h2o"]
+      },
+      {
+        q: "Quantas patas tem uma aranha?",
+        a: ["8", "oito"]
+      },
+      {
+        q: "Qual é o animal que tem o maior cérebro?",
+        a: ["baleia"]
+      },
+      {
+        q: "Qual é o continente mais frio do mundo?",
+        a: ["antártida", "antartica"]
+      },
+      {
+        q: "Qual é o país conhecido como a terra do sol nascente?",
+        a: ["japão"]
+      },
+      {
+        q: "Qual é o maior oceano do mundo?",
+        a: ["oceano pacífico", "pacifico"]
+      },
+      {
+        q: "Qual é o nome do famoso detetive criado por Arthur Conan Doyle?",
+        a: ["sherlock holmes"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que vive em um abacaxi no fundo do mar?",
+        a: ["bob esponja"]
+      },
+      {
+        q: "Qual é o nome do famoso super-herói que tem uma capa vermelha e voa pelo céu?",
+        a: ["superman"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um gato azul e adora comer queijo?",
+        a: ["garfield"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um pato e tem um amigo chamado Pato Donald?",
+        a: ["pato donald"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um coelho e adora cenouras?",
+        a: ["bugs bunny"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um cachorro e tem um amigo chamado Scooby-Doo?",
+        a: ["scooby-doo"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um porquinho e adora brincar na lama?",
+        a: ["peppa pig"]
+      },
+      {
+        q: "Qual é o nome do famoso personagem de desenho animado que é um pato e tem uma namorada chamada Margarida?",
+        a: ["pato donald"]
+      },
+      {
+        q: "Qual sentimento com a letra M faz seu coração bater mais forte?",
+        a: ["medo", "motivação", "momentos", "memórias", "música"]
+      },
+      {
+        q: "O que começa com S e você sempre procura numa pessoa?",
+        a: ["sinceridade", "sabedoria", "simpatia", "sensatez", "solidariedade"]
+      },
+      {
+        q: "Qual palavra que começa com É representa seu maior desejo?",
+        a: ["êxito", "esperança", "ética", "equilíbrio", "evolução"]
+      },
+      {
+        q: "O que começa com M e não pode faltar em sua vida?",
+        a: ["música", "memórias", "momentos", "motivação", "medicina"]
+      },
+      {
+        q: "Qual palavra com S representa sua melhor qualidade?",
+        a: ["simpatia", "sinceridade", "sabedoria", "sensibilidade", "sensatez"]
+      },
+      {
+        q: "Qual é a cor do cavalo branco de Napoleão?",
+        a: ["branco"]
+      },
+      {
+        q: "Quanto é 2 + 2 × 2?",
+        a: ["6", "seis"]
+      },
+      {
+        q: "Quantos animais de cada espécie Moisés levou na arca?",
+        a: ["nenhum", "zero", "0", "foi noé, não moisés"]
+      },
+      {
+        q: "Se você jogar uma pedra vermelha em um lago azul, o que acontece?",
+        a: ["a pedra afunda", "afunda", "molha", "cai na água"]
+      },
+      {
+        q: "Qual mês tem 28 dias?",
+        a: ["todos", "todos os meses", "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
+      },
+      {
+        q: "O que te permite ver além das aparências e julgar as pessoas pelo que elas realmente são?",
+        a: ["empatia", "sabedoria", "compreensão", "discernimento", "perspicácia"]
+      },
+      {
+        q: "Qual característica é essencial para enfrentar desafios que parecem impossíveis?",
+        a: ["perseverança", "coragem", "determinação", "resiliência", "força", "fé", "persistência"]
+      },
+      {
+        q: "O que é necessário cultivar para construir relacionamentos duradouros?",
+        a: ["paciência", "respeito", "lealdade", "honestidade", "confiança", "compreensão", "tolerância"]
+      },
+      {
+        q: "Qual virtude ajuda a perdoar aqueles que nos magoaram profundamente?",
+        a: ["compaixão", "bondade", "misericórdia", "amor", "generosidade", "humildade", "compreensão"]
+      },
+      {
+        q: "O que precisa ter para assumir responsabilidade pelos próprios erros?",
+        a: ["humildade", "honestidade", "maturidade", "integridade", "coragem", "caráter"]
+      },
+      {
+        q: "O que um fã faz quando descobre que seu artista favorito vem para sua cidade?",
+        a: ["compra ingresso", "acampa na fila", "economiza dinheiro", "posta nas redes sociais", "grita", "chora", "enlouquece"]
+      },
+      {
+        q: "Como um verdadeiro fã age quando encontra seu ídolo pessoalmente?",
+        a: ["tira foto", "pede autógrafo", "chora", "congela", "gagueja", "abraça", "não consegue falar", "treme", "desmaia"]
+      },
+      {
+        q: "O que um fã obsessivo coleciona de seu ídolo ou série favorita?",
+        a: ["pôsteres", "figurinhas", "camisetas", "ingressos", "álbuns", "fotos", "autógrafos", "action figures", "revistas", "itens raros"]
+      },
+      {
+        q: "Como um super fã demonstra seu amor pelo time do coração?",
+        a: ["tatua o símbolo", "vai a todos os jogos", "compra camisas", "decora a casa", "defende nas redes sociais", "nunca perde um jogo", "conhece todos os jogadores", "sabe o hino"]
+      },
+      {
+        q: "O que um fã extremo faz nas redes sociais em relação ao seu ídolo?",
+        a: ["segue todas as contas", "comenta em todas as fotos", "defende de haters", "cria fã-clube", "faz edits", "posta teorias", "compartilha tudo", "cria memes", "sabe todos os detalhes"]
+      },
+      {
+        q: "Qual brincadeira tradicional envolve uma pessoa de olhos fechados tentando pegar os outros?",
+        a: ["pega-pega", "cabra-cega", "esconde-esconde com pegador", "pique-esconde", "cobra-cega"]
+      },
+      {
+        q: "Em qual brincadeira as crianças pulam sobre um desenho feito no chão com giz ou riscado na terra?",
+        a: ["amarelinha", "academia", "macaco", "sapata", "maré"]
+      },
+      {
+        q: "Qual brincadeira envolve passar um objeto escondido enquanto uma música toca, e quem estiver com ele quando a música para é eliminado?",
+        a: ["batata quente", "passa anel", "dança das cadeiras", "lenço atrás", "stop"]
+      },
+      {
+        q: "Qual é a brincadeira onde você precisa equilibrar uma pedra sobre outra empilhada?",
+        a: ["cinco marias", "pedrinhas", "jogo das pedrinhas", "jogo do osso", "bilboquê", "amarelinha de pedra"]
+      },
+      {
+        q: "Em qual brincadeira as crianças formam uma roda, giram e depois caem sentadas no chão?",
+        a: ["ciranda", "roda", "roda-roda", "corre-cutia", "dança da cadeira sem cadeira", "gato e rato", "roda pião"]
+      },
+      {
+        q: "O que você diz quando precisa que alguém repita o que acabou de falar?",
+        a: ["o quê?", "como?", "repete por favor", "não entendi", "pode repetir", "fala de novo", "hã?"]
+      },
+      {
+        q: "O que você diz quando quer que alguém te passe o sal durante uma refeição?",
+        a: ["me passa o sal", "passa o sal", "por favor, o sal", "o sal, por favor", "poderia me passar o sal"]
+      },
+      {
+        q: "O que você diz quando precisa de um tempo extra para completar uma tarefa?",
+        a: ["mais tempo", "preciso de mais tempo", "me dá um prazo maior", "posso ter uma extensão", "espera um pouco"]
+      },
+      {
+        q: "O que você fala para pedir carona a um amigo?",
+        a: ["me dá uma carona", "pode me dar carona", "tá indo pra onde", "vai passar perto de", "tô sem carro", "me leva"]
+      },
+      {
+        q: "O que você diz quando quer um desconto numa loja?",
+        a: ["tem desconto", "faz um desconto", "pode melhorar o preço", "à vista tem desconto", "tem promoção", "esse é o menor preço"]
+      },
+      {
+        q: "O que alguém diz nas redes sociais quando quer atingir uma pessoa específica sem mencionar seu nome?",
+        a: ["quem se identificou é porque é", "pra quem serviu a carapuça", "alguns vão entender", "não é indireta mas", "alguém precisa ouvir isso", "só observo"]
+      },
+      {
+        q: "O que uma pessoa fala quando quer dar a entender que está ocupada demais para algum convite?",
+        a: ["vou ver minha agenda", "te aviso depois", "não sei se vou estar livre", "quem sabe", "vamos combinar", "talvez", "preciso confirmar"]
+      },
+      {
+        q: "Qual frase é usada quando alguém quer sugerir que está na hora da visita ir embora?",
+        a: ["nossa, já está tarde", "amanhã acordo cedo", "preciso dormir", "vou tomar um banho", "amanhã tenho compromisso", "que horas são?"]
+      },
+      {
+        q: "O que alguém diz quando não gostou da comida mas não quer ofender quem cozinhou?",
+        a: ["está diferente", "é uma receita interessante", "nunca provei algo assim", "já estou satisfeito", "é bem original", "tem um sabor único"]
+      },
+      {
+        q: "O que uma pessoa fala quando quer dar a entender que alguém está sendo inconveniente em um grupo?",
+        a: ["nossa, alguém acordou de mau humor", "tem gente que não sabe brincar", "não é todo mundo que entende", "alguém não está no clima hoje", "certas pessoas precisam relaxar"]
+      },
+      {
+        q: "Qual fruta é conhecida como a 'maçã dourada' e é famosa por ser a fruta que causou a 'Guerra de Troia' na mitologia grega?",
+        a: ["maçã"]
+      },
+      {
+        q: "Que fruta tem casca verde e polpa vermelha, e é frequentemente usada em saladas de frutas e sucos?",
+        a: ["melancia"]
+      },
+      {
+        q: "Qual fruta tropical é amarela e tem um formato alongado, sendo muito popular em smoothies e vitaminas?",
+        a: ["banana"]
+      },
+      {
+        q: "Que fruta pequena e vermelha é famosa por ser a preferida da Branca de Neve?",
+        a: ["maçã"]
+      },
+      {
+        q: "Qual fruta cítrica é conhecida por ser amarela e muito rica em vitamina C?",
+        a: ["limão"]
+      },
+      {
+        q: "O que um fofoqueiro sempre quer saber sobre os outros?",
+        a: ["novidades", "segredos", "fuxicos", "histórias"]
+      },
+      {
+        q: "Qual é o principal assunto de conversa entre fofoqueiros em uma festa?",
+        a: ["outras pessoas", "vida alheia", "novidades", "fuxicos"]
+      },
+      {
+        q: "O que um fofoqueiro adora espalhar, mesmo que não seja verdade?",
+        a: ["boatos", "rumores", "intrigas", "histórias"]
+      },
+      {
+        q: "Onde os fofoqueiros geralmente se reúnem para trocar informações?",
+        a: ["rodas de conversa", "grupos de amigos", "redes sociais", "eventos"]
+      },
+      {
+        q: "O que um fofoqueiro faz quando descobre um segredo?",
+        a: ["compartilha", "conta para os outros", "espalha", "dá com a língua nos dentes"]
+      },
+      {
+        q: "O que você pensa quando alguém diz 'Pense em um número'?",
+        a: ["um número", "número aleatório", "qualquer número"]
+      },
+      {
+        q: "O que vem à mente quando você ouve a palavra 'felicidade'?",
+        a: ["sorriso", "alegria", "momentos felizes", "satisfação"]
+      },
+      {
+        q: "O que você imagina quando alguém menciona 'um lugar tranquilo'?",
+        a: ["praia", "montanha", "natureza", "casa"]
+      },
+      {
+        q: "O que você pensa quando alguém pergunta 'Qual é o seu sonho?'",
+        a: ["objetivo de vida", "realização pessoal", "futuro", "aspirações"]
+      },
+      {
+        q: "O que vem à sua mente quando você ouve a palavra 'liberdade'?",
+        a: ["independência", "viajar", "fazer o que quiser", "escolhas"]
+      },
+      {
+        q: "É verdade que a Terra gira em torno do Sol?",
+        a: ["sim", "verdade", "isso é verdade"]
+      },
+      {
+        q: "A água ferve a 100 graus Celsius ao nível do mar. Isso é verdade?",
+        a: ["sim", "verdade", "isso é verdade"]
+      },
+      {
+        q: "É verdade que o Brasil é o maior país da América do Sul?",
+        a: ["sim", "verdade", "isso é verdade"]
+      },
+      {
+        q: "O oxigênio é essencial para a respiração humana. Isso é verdade?",
+        a: ["sim", "verdade", "isso é verdade"]
+      },
+      {
+        q: "É verdade que a Grande Muralha da China é visível a olho nu do espaço?",
+        a: ["não", "falso", "isso não é verdade"]
+      },
+      {
+        q: "Qual é o apelido que só seus amigos mais próximos usam para te chamar?",
+        a: ["seu apelido pessoal"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual foi o lugar mais inusitado onde você e seus amigos já se encontraram?",
+        a: ["um lugar inusitado que só seus amigos saberiam"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é a comida ou prato que seus amigos sabem que você nunca recusa?",
+        a: ["sua comida ou prato favorito"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é a música que sempre toca quando você e seus amigos se reúnem?",
+        a: ["uma música que só seus amigos conhecem"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é a piada interna ou bordão que só você e seu grupo de amigos entendem?",
+        a: ["uma piada interna ou bordão específico"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é o nome do autor de 'Dom Quixote'?",
+        a: ["miguel de cervantes"]
+      },
+      {
+        q: "Em qual livro você encontraria o personagem Holden Caulfield?",
+        a: ["o apanhador no campo de centeio"]
+      },
+      {
+        q: "Quem escreveu o romance 'Orgulho e Preconceito'?",
+        a: ["jane austen"]
+      },
+      {
+        q: "Qual é o título do primeiro livro da série 'Harry Potter'?",
+        a: ["harry potter e a pedra filosofal"]
+      },
+      {
+        q: "Quem é o autor de 'Cem Anos de Solidão'?",
+        a: ["gabriel garcía márquez"]
+      },
+      {
+        q: "Qual é o nome do protagonista principal de Dragon Ball?",
+        a: ["goku", "son goku"]
+      },
+      {
+        q: "Qual é o nome do irmão mais velho de Goku?",
+        a: ["raditz"]
+      },
+      {
+        q: "Qual é o nome do filho de Goku e Chi-Chi?",
+        a: ["gohan"]
+      },
+      {
+        q: "Qual é o nome do inimigo que destruiu o Planeta Vegeta?",
+        a: ["freeza"]
+      },
+      {
+        q: "Qual é o nome da técnica mais famosa de Goku, onde ele se transforma em um Super Saiyajin?",
+        a: ["super saiyajin", "super saiyan"]
+      },
+      {
+        q: "Qual é o nome do protagonista principal de Naruto?",
+        a: ["naruto uzumaki"]
+      },
+      {
+        q: "Qual é o nome do melhor amigo e rival de Naruto?",
+        a: ["sasuke uchiha"]
+      },
+      {
+        q: "Qual é o nome da técnica de invocação usada por Naruto para chamar sapos?",
+        a: ["kuchiyose no jutsu"]
+      },
+      {
+        q: "Qual é o nome do sensei de Naruto, Sasuke e Sakura?",
+        a: ["kakashi hatake"]
+      },
+      {
+        q: "Qual é o nome do vilão principal que Naruto enfrenta no exame Chunin?",
+        a: ["orochimaru"]
+      },
+      {
+        q: "Qual é o nome do protagonista principal de One Piece?",
+        a: ["monkey d. luffy"]
+      },
+      {
+        q: "Qual é o nome do pirata que possui o poder da fruta Gomu Gomu no Mi?",
+        a: ["luffy"]
+      },
+      {
+        q: "Qual é o nome do espadachim da tripulação do Chapéu de Palha?",
+        a: ["roronoa zoro"]
+      },
+      {
+        q: "Qual é o nome do navio da tripulação do Chapéu de Palha?",
+        a: ["thousand sunny"]
+      },
+      {
+        q: "Qual é o nome do tesouro que Luffy está procurando para se tornar o Rei dos Piratas?",
+        a: ["one piece"]
+      },
+      {
+        q: "Qual é o seu maior sonho?",
+        a: ["seu sonho pessoal"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é o lugar que você mais gostaria de conhecer?",
+        a: ["seu lugar favorito"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é a sua memória mais feliz?",
+        a: ["sua memória feliz"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é a sua maior conquista até hoje?",
+        a: ["sua conquista"],
+        freeAnswer: true
+      },
+      {
+        q: "Qual é o seu maior medo?",
+        a: ["seu medo"],
+        freeAnswer: true
+      }
+    ];
+
+    // Variáveis do jogo
+    let current = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let skipsAvailable = 0;
+    let hintsAvailable = 3;
+    let gameMode = 'single';
+    let currentPlayer = 1;
+    let player1Score = 0;
+    let player2Score = 0;
+    let player1Name = "Jogador 1";
+    let player2Name = "Jogador 2";
+    let timerInterval;
+    let timeLeft = 30;
+    let isOnline = true;
+    let userId = null;
+    let difficulty = 'medium';
+    let filteredQuestions = [];
+    let hintLevel = 1; // Nível da dica atual
+    let multiplayerConnection = null;
+    let roomCode = null;
+
+    // Classificar as questões por dificuldade
+    const easyQuestions = questions.filter(q => q.difficulty === 'easy' || !q.difficulty);
+    const mediumQuestions = questions.filter(q => q.difficulty === 'medium' || !q.difficulty);
+    const hardQuestions = questions.filter(q => q.difficulty === 'hard' || !q.difficulty);
+
+    // Detecção de Conectividade
+    window.addEventListener('load', checkConnection);
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('offline', checkConnection);
+
+    function checkConnection() {
+      isOnline = navigator.onLine;
+      document.getElementById('networkStatus').textContent = isOnline ?
+        "Status: Conectado" : "Status: Desconectado";
+
+      document.getElementById('offlineIndicator').style.display =
+        isOnline ? 'none' : 'block';
+      document.getElementById('onlineIndicator').style.display =
+        isOnline ? 'block' : 'none';
+
+      // Se estiver offline, guarde dados localmente
+      if (!isOnline) {
+        saveGameState();
+      }
+    }
+
+    // Salvar e Recuperar Estado do Jogo (com safeStorage em vez de localStorage)
+    function saveGameState() {
+      const gameState = {
+        current,
+        score,
+        correctAnswers,
+        skipsAvailable,
+        hintsAvailable,
+        gameMode,
+        currentPlayer,
+        player1Score,
+        player2Score,
+        player1Name,
+        player2Name
+      };
+
+      if (userId) {
+        setDoc(doc(db, "gameStates", userId), gameState);
+      } else {
+        safeStorage.setItem('citaRespostaGameState', JSON.stringify(gameState));
+      }
+    }
+
+    async function loadGameState() {
+      if (userId) {
+        const docRef = doc(db, "gameStates", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const gameState = docSnap.data();
+          current = gameState.current;
+          score = gameState.score;
+          correctAnswers = gameState.correctAnswers;
+          skipsAvailable = gameState.skipsAvailable;
+          hintsAvailable = gameState.hintsAvailable;
+          gameMode = gameState.gameMode;
+          currentPlayer = gameState.currentPlayer;
+          player1Score = gameState.player1Score;
+          player2Score = gameState.player2Score;
+          player1Name = gameState.player1Name;
+          player2Name = gameState.player2Name;
+
+          // Atualizar interface
+          updateScore();
+          if (gameMode === 'dueto') {
+            updateDuetoDisplay();
+          }
+        }
+      } else {
+        const savedState = safeStorage.getItem('citaRespostaGameState');
+        if (savedState) {
+          const gameState = JSON.parse(savedState);
+          current = gameState.current;
+          score = gameState.score;
+          correctAnswers = gameState.correctAnswers;
+          skipsAvailable = gameState.skipsAvailable;
+          hintsAvailable = gameState.hintsAvailable;
+          gameMode = gameState.gameMode;
+          currentPlayer = gameState.currentPlayer;
+          player1Score = gameState.player1Score;
+          player2Score = gameState.player2Score;
+          player1Name = gameState.player1Name;
+          player2Name = gameState.player2Name;
+
+          // Atualizar interface
+          updateScore();
+          if (gameMode === 'dueto') {
+            updateDuetoDisplay();
+          }
+        }
+      }
+    }
+
+    // Funções de Autenticação
+    function registerUser() {
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          userId = userCredential.user.uid;
+          alert("Usuário registrado com sucesso!");
+        })
+        .catch((error) => {
+          alert("Erro ao registrar usuário: " + error.message);
+        });
+    }
+    // Inicialização e Eventos
+    document.getElementById('singlePlayerBtn').addEventListener('click', startSinglePlayerMode);
+    document.getElementById('duetoBtn').addEventListener('click', showDuetoSetup);
+    document.getElementById('startDuetoBtn').addEventListener('click', startDuetoMode);
+
+    function startSinglePlayerMode() {
+      gameMode = 'single';
+      document.getElementById('gameModeBtns').style.display = 'none';
+      document.getElementById('difficultyBtns').style.display = 'block';
+    }
+
+    function showDuetoSetup() {
+      document.getElementById('gameModeBtns').style.display = 'none';
+      document.getElementById('duetoSetup').style.display = 'block';
+    }
+
+    function startDuetoMode() {
+      gameMode = 'dueto';
+      player1Name = document.getElementById('player1Name').value || "Jogador 1";
+      player2Name = document.getElementById('player2Name').value || "Jogador 2";
+      player1Score = 0;
+      player2Score = 0;
+      currentPlayer = 1;
+
+      document.getElementById('duetoSetup').style.display = 'none';
+      document.getElementById('difficultyBtns').style.display = 'block';
+    }
+
+    function setDifficulty(level) {
+      difficulty = level;
+      document.getElementById('difficultyBtns').style.display = 'none';
+      document.getElementById('mainGameArea').style.display = 'block';
+      document.getElementById('player1Container').style.display = gameMode === 'single' ? 'block' : 'none';
+      document.getElementById('duetoInfo').style.display = gameMode === 'dueto' ? 'block' : 'none';
+
+      // Filtrar questões baseado na dificuldade
+      switch(level) {
+        case 'easy':
+          filteredQuestions = easyQuestions;
+          timeLeft = 45; // Mais tempo para respostas fáceis
+          break;
+        case 'medium':
+          filteredQuestions = mediumQuestions;
+          timeLeft = 30;
+          break;
+        case 'hard':
+          filteredQuestions = hardQuestions;
+          timeLeft = 20; // Menos tempo para respostas difíceis
+          break;
+      }
+
+      // Atualizar nomes dos jogadores no modo dueto
+      if (gameMode === 'dueto') {
+        document.getElementById('player1NameDisplay').textContent = player1Name;
+        document.getElementById('player2NameDisplay').textContent = player2Name;
+        updateDuetoDisplay();
+      }
+
+      restartGame();
+      if (gameMode === 'dueto') {
+        startTimer();
+      }
+    }
+
+    function updateDuetoDisplay() {
+      document.getElementById('player1ScoreDisplay').textContent = `${player1Score} pontos`;
+      document.getElementById('player2ScoreDisplay').textContent = `${player2Score} pontos`;
+      document.getElementById('turnIndicator').textContent = `Vez de: ${currentPlayer === 1 ? player1Name : player2Name}`;
+
+      // Destacar jogador atual
+      document.getElementById('player1').className = currentPlayer === 1 ? 'player active-player' : 'player';
+      document.getElementById('player2').className = currentPlayer === 2 ? 'player active-player' : 'player';
+    }
+
+    function switchPlayer() {
+      currentPlayer = currentPlayer === 1 ? 2 : 1;
+      updateDuetoDisplay();
+      resetTimer();
+    }
+
+    function startTimer() {
+      if (gameMode !== 'dueto') return;
+
+      clearInterval(timerInterval);
+      timeLeft = 30;
+      document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('feedback').textContent = "⏰ Tempo esgotado!";
+          switchPlayer();
+          setTimeout(showQuestion, 1500);
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      startTimer();
+    }
+
+    function showQuestion() {
+      document.getElementById("question").textContent = filteredQuestions[current].q;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("answerInput").disabled = false;
+      document.getElementById("submitBtn").disabled = false;
+      document.getElementById("giveUpBtn").style.display = "inline-block";
+      document.getElementById("noSenseBtn").style.display = "inline-block";
+      document.getElementById("secondChanceBtn").style.display = "inline-block";
+      document.getElementById("restartBtn").style.display = "none";
+
+      // Mostrar indicador de dificuldade
+      const difficultyIndicator = document.createElement('div');
+      difficultyIndicator.className = `difficulty-indicator ${difficulty}`;
+      difficultyIndicator.textContent = `Nível: ${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}`;
+      document.getElementById("question").parentNode.insertBefore(difficultyIndicator, document.getElementById("question"));
+
+      // Mostrar botão de dica se houver dicas disponíveis
+      if (hintsAvailable > 0) {
+        document.getElementById("hintBtn").style.display = "inline-block";
+      } else {
+        document.getElementById("hintBtn").style.display = "none";
+      }
+
+      if (gameMode === 'dueto') {
+        resetTimer();
+      }
+
+      if (skipsAvailable > 0) {
+        document.getElementById("skipBtn").style.display = "inline-block";
+      } else {
+        document.getElementById("skipBtn").style.display = "none";
+      }
+
+      saveGameState();
+    }
+
+    function updateScore() {
+      if (gameMode === 'single') {
+        document.getElementById("player1Container").textContent = `Pontuação: ${score}`;
+      } else {
+        updateDuetoDisplay();
+      }
+      saveGameState();
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("answerInput").value.trim().toLowerCase();
+      const validAnswers = filteredQuestions[current].a;
+      const feedback = document.getElementById("feedback");
+
+      if (filteredQuestions[current].freeAnswer) {
+        if (input.length > 0) {
+          feedback.textContent = "🎉 Resposta aceita!";
+
+          if (gameMode === 'multiplayer') {
+            const points = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 10 : 15;
+            if (currentPlayer === 1) {
+              player1Score += points;
+            } else {
+              player2Score += points;
+            }
+            updateGameState({
+              currentPlayer: currentPlayer === 1 ? 2 : 1,
+              timeLeft: 30,
+              currentQuestion: current + 1
+            });
+          }
+
+          updateScore();
+          current++;
+
+          if (current < filteredQuestions.length) {
+            if (gameMode === 'dueto') {
+              switchPlayer();
+            }
+            setTimeout(showQuestion, 2000);
+          } else {
+            endGame();
+          }
+        } else {
+          feedback.textContent = "❌ Por favor, digite uma resposta!";
+        }
+        return;
+      }
+
+      const isCorrect = validAnswers.some(ans => input.includes(ans));
+
+      if (isCorrect) {
+        feedback.textContent = "🎉 Acertou, mizeravi!";
+
+        if (gameMode === 'multiplayer') {
+          const points = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 10 : 15;
+          if (currentPlayer === 1) {
+            player1Score += points;
+          } else {
+            player2Score += points;
+          }
+          updateGameState({
+            currentPlayer: currentPlayer === 1 ? 2 : 1,
+            timeLeft: 30,
+            currentQuestion: current + 1
+          });
+        }
+
+        updateScore();
+        current++;
+
+        if (current < filteredQuestions.length) {
+          if (gameMode === 'dueto') {
+            switchPlayer();
+          }
+          setTimeout(showQuestion, 2000);
+        } else {
+          endGame();
+        }
+      } else {
+        feedback.textContent = "❌ Errou!";
+
+        if (gameMode === 'multiplayer') {
+          updateGameState({
+            currentPlayer: currentPlayer === 1 ? 2 : 1,
+            timeLeft: 30
+          });
+        }
+
+        if (gameMode === 'single') {
+          feedback.textContent += " Fim de jogo!";
+          document.getElementById("answerInput").disabled = true;
+          document.getElementById("submitBtn").disabled = true;
+          document.getElementById("restartBtn").style.display = "inline-block";
+          document.getElementById("giveUpBtn").style.display = "none";
+          document.getElementById("noSenseBtn").style.display = "none";
+          document.getElementById("secondChanceBtn").style.display = "none";
+          document.getElementById("skipBtn").style.display = "none";
+
+          correctAnswers = 0;
+          skipsAvailable = 0;
+        } else {
+          feedback.textContent += " Vez do próximo jogador!";
+          switchPlayer();
+          setTimeout(showQuestion, 2000);
+        }
+      }
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+
+      if (gameMode === 'single') {
+        feedback.textContent = "🏁 Fim do jogo! Você manja das zoeiras!";
+      } else {
+        // Determinar vencedor no modo dueto
+        let winnerMessage = "";
+        if (player1Score > player2Score) {
+          winnerMessage = `🏆 ${player1Name} venceu com ${player1Score} pontos!`;
+        } else if (player2Score > player1Score) {
+          winnerMessage = `🏆 ${player2Name} venceu com ${player2Score} pontos!`;
+        } else {
+          winnerMessage = "🏆 Empate! Ambos jogadores mandaram bem!";
+        }
+
+        document.getElementById("feedback").textContent = "🏁 Fim do jogo!";
+        document.getElementById("feedback").innerHTML += `<div class="winner">${winnerMessage}</div>`;
+      }
+
+      document.getElementById("question").textContent = "";
+      document.getElementById("answerInput").style.display = "none";
+      document.getElementById("submitBtn").style.display = "none";
+      document.getElementById("giveUpBtn").style.display = "none";
+      document.getElementById("noSenseBtn").style.display = "none";
+      document.getElementById("secondChanceBtn").style.display = "none";
+      document.getElementById("skipBtn").style.display = "none";
+      document.getElementById("restartBtn").style.display = "inline-block";
+
+      if (userId) {
+        setDoc(doc(db, "gameStates", userId), {});
+      } else {
+        safeStorage.removeItem('citaRespostaGameState');
+      }
+    }
+
+    function skipQuestion() {
+      if (skipsAvailable > 0) {
+        skipsAvailable--;
+        document.getElementById("feedback").textContent = "Questão pulada! 🦘";
+        current++;
+        
+        if (gameMode === 'multiplayer') {
+          updateGameState({
+            currentPlayer: currentPlayer === 1 ? 2 : 1,
+            timeLeft: 30,
+            currentQuestion: current
+          });
+        }
+        
+        if (current < filteredQuestions.length) {
+          setTimeout(showQuestion, 1000);
+        } else {
+          endGame();
+        }
+      }
+    }
+
+    // Função para gerar dicas mais elaboradas
+    function generateHint(question) {
+      const hints = [];
+      
+      // Dica nível 1: Primeira letra
+      hints.push(`A resposta começa com a letra "${question.a[0][0].toUpperCase()}"`);
+      
+      // Dica nível 2: Tamanho da palavra
+      if (question.a[0].length <= 3) {
+        hints.push("É uma palavra curta");
+      } else if (question.a[0].length <= 6) {
+        hints.push("É uma palavra de tamanho médio");
+      } else {
+        hints.push("É uma palavra longa");
+      }
+      
+      // Dica nível 3: Categoria ou contexto
+      if (question.q.includes("fruta")) {
+        hints.push("É uma fruta");
+      } else if (question.q.includes("animal")) {
+        hints.push("É um animal");
+      } else if (question.q.includes("país")) {
+        hints.push("É um país");
+      } else if (question.q.includes("cidade")) {
+        hints.push("É uma cidade");
+      } else if (question.q.includes("cor")) {
+        hints.push("É uma cor");
+      } else if (question.q.includes("número")) {
+        hints.push("É um número");
+      }
+      
+      // Dica nível 4: Letras em posições específicas
+      if (question.a[0].length > 3) {
+        const middleIndex = Math.floor(question.a[0].length / 2);
+        hints.push(`A letra do meio é "${question.a[0][middleIndex].toUpperCase()}"`);
+      }
+      
+      // Dica nível 5: Última letra
+      hints.push(`A resposta termina com a letra "${question.a[0][question.a[0].length - 1].toUpperCase()}"`);
+      
+      return hints;
+    }
+
+    function showHint() {
+      if (hintsAvailable > 0) {
+        hintsAvailable--;
+        const currentQuestion = filteredQuestions[current];
+        const hints = generateHint(currentQuestion);
+        
+        const hintText = hints[Math.min(hintLevel - 1, hints.length - 1)];
+        document.getElementById("feedback").innerHTML = `
+          <div class="hint-text">💡 Dica: ${hintText}</div>
+          <div class="hint-level">Nível da dica: ${hintLevel}/5</div>
+        `;
+        
+        hintLevel = Math.min(hintLevel + 1, 5);
+        
+        document.getElementById("hintBtn").style.display = hintsAvailable > 0 ? "inline-block" : "none";
+        
+        if (gameMode === 'multiplayer') {
+          updateGameState({
+            timeLeft: timeLeft
+          });
+        }
+      }
+    }
+
+    function restartGame() {
+      current = Math.floor(Math.random() * filteredQuestions.length);
+      document.getElementById("answerInput").style.display = "inline-block";
+      document.getElementById("submitBtn").style.display = "inline-block";
+
+      if (gameMode === 'single') {
+        score = 0;
+        correctAnswers = 0;
+        skipsAvailable = 0;
+        hintsAvailable = 3;
+      } else {
+        player1Score = 0;
+        player2Score = 0;
+        currentPlayer = 1;
+        updateDuetoDisplay();
+        resetTimer();
+      }
+
+      updateScore();
+      showQuestion();
+    }
+
+    function giveUp() {
+      document.getElementById("feedback").textContent = "Você desistiu! Tente novamente.";
+
+      if (gameMode === 'single') {
+        correctAnswers = 0;
+        skipsAvailable = 0;
+      } else {
+        clearInterval(timerInterval);
+      }
+
+      restartGame();
+    }
+
+    function noSense() {
+      current = Math.floor(Math.random() * filteredQuestions.length);
+      while (filteredQuestions[current].a.length > 0 && filteredQuestions[current].a[0].length > 4) {
+        current = Math.floor(Math.random() * filteredQuestions.length);
+      }
+
+      if (gameMode === 'dueto') {
+        resetTimer();
+      }
+
+      showQuestion();
+    }
+
+    function secondChance() {
+      document.getElementById("feedback").textContent = "Tente novamente com a mesma pergunta!";
+      document.getElementById("answerInput").value = "";
+
+      if (gameMode === 'dueto') {
+        resetTimer();
+      }
+    }
+
+    // Funções de Multiplayer
+    function showMultiplayerOptions() {
+      document.getElementById('gameModeBtns').style.display = 'none';
+      document.getElementById('multiplayerBtns').style.display = 'block';
+      document.getElementById('webMultiplayerOptions').style.display = 'none';
+      document.getElementById('roomCodeContainer').style.display = 'none';
+      document.getElementById('joinRoomContainer').style.display = 'none';
+    }
+
+    function showWebMultiplayerOptions() {
+      document.getElementById('webMultiplayerOptions').style.display = 'block';
+    }
+
+    function showCreateRoom() {
+      document.getElementById('webMultiplayerOptions').style.display = 'none';
+      startWebMultiplayer();
+    }
+
+    function showJoinRoom() {
+      document.getElementById('webMultiplayerOptions').style.display = 'none';
+      document.getElementById('joinRoomContainer').style.display = 'block';
+    }
+
+    async function startWebMultiplayer() {
+      try {
+        // Gerar código da sala
+        roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.getElementById('roomCode').textContent = roomCode;
+        document.getElementById('roomCodeContainer').style.display = 'block';
+        
+        // Criar sala no Firebase
+        const roomRef = doc(db, "rooms", roomCode);
+        await setDoc(roomRef, {
+          created: new Date(),
+          status: 'waiting',
+          players: [{
+            id: userId,
+            name: player1Name,
+            isHost: true,
+            score: 0,
+            hintsAvailable: 3,
+            skipsAvailable: 0
+          }],
+          gameState: {
+            currentPlayer: 1,
+            difficulty: 'medium',
+            timeLeft: 30,
+            currentQuestion: 0
+          }
+        });
+
+        // Configurar listener para mudanças na sala
+        onSnapshot(roomRef, (doc) => {
+          const roomData = doc.data();
+          if (!roomData) return;
+
+          // Atualizar lista de jogadores
+          if (roomData.players.length === 2) {
+            const player2 = roomData.players.find(p => p.id !== userId);
+            if (player2) {
+              document.getElementById('player2Item').style.display = 'flex';
+              document.getElementById('player2Name').textContent = player2.name;
+              
+              // Mostrar notificação
+              const notification = document.createElement('div');
+              notification.className = 'player-notification';
+              notification.textContent = `${player2.name} entrou na sala!`;
+              document.getElementById('roomCodeContainer').insertBefore(
+                notification,
+                document.getElementById('startGameBtn')
+              );
+              
+              // Mostrar botão de iniciar
+              document.getElementById('startGameBtn').style.display = 'block';
+              
+              // Remover notificação após 3 segundos
+              setTimeout(() => {
+                notification.remove();
+              }, 3000);
+            }
+          }
+
+          // Atualizar estado do jogo
+          if (roomData.status === 'playing') {
+            const gameState = roomData.gameState;
+            const currentPlayer = roomData.players.find(p => p.id === userId);
+            
+            if (currentPlayer) {
+              // Atualizar pontuação
+              if (currentPlayer.isHost) {
+                player1Score = currentPlayer.score;
+              } else {
+                player2Score = currentPlayer.score;
+              }
+              
+              // Atualizar dicas e pulos
+              hintsAvailable = currentPlayer.hintsAvailable;
+              skipsAvailable = currentPlayer.skipsAvailable;
+              
+              // Atualizar interface
+              updateScore();
+              updateDuetoDisplay();
+              
+              // Atualizar timer
+              if (gameState.timeLeft !== timeLeft) {
+                timeLeft = gameState.timeLeft;
+                document.getElementById('timer').textContent = `Tempo: ${timeLeft}s`;
+              }
+
+              // Atualizar questão atual
+              if (gameState.currentQuestion !== current) {
+                current = gameState.currentQuestion;
+                showQuestion();
+              }
+            }
+          }
+        });
+
+      } catch (error) {
+        console.error("Erro ao criar sala:", error);
+        alert("Erro ao criar sala. Tente novamente.");
+      }
+    }
+
+    async function joinWebMultiplayer() {
+      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+      if (!code || code.length !== 6) {
+        alert("Por favor, digite um código válido de 6 caracteres!");
+        return;
+      }
+
+      try {
+        const roomRef = doc(db, "rooms", code);
+        const roomDoc = await getDoc(roomRef);
+        
+        if (!roomDoc.exists()) {
+          alert("Sala não encontrada!");
+          return;
+        }
+
+        const roomData = roomDoc.data();
+        if (roomData.status !== 'waiting') {
+          alert("Esta sala já está em jogo!");
+          return;
+        }
+
+        // Entrar na sala
+        await updateDoc(roomRef, {
+          players: arrayUnion({
+            id: userId,
+            name: player1Name,
+            isHost: false,
+            score: 0,
+            hintsAvailable: 3,
+            skipsAvailable: 0
+          })
+        });
+
+        // Configurar listener para mudanças na sala
+        onSnapshot(roomRef, (doc) => {
+          const roomData = doc.data();
+          if (!roomData) return;
+
+          if (roomData.status === 'playing') {
+            startMultiplayerGame(roomData);
+          }
+        });
+
+      } catch (error) {
+        console.error("Erro ao entrar na sala:", error);
+        alert("Erro ao entrar na sala. Tente novamente.");
+      }
+    }
+
+    function copyRoomCode() {
+      const code = document.getElementById('roomCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const copyBtn = document.getElementById('copyCodeBtn');
+        copyBtn.innerHTML = '<span>✓</span> Copiado!';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<span>📋</span> Copiar Código';
+        }, 2000);
+      });
+    }
+
+    function startMultiplayerGame(roomData) {
+      gameMode = 'multiplayer';
+      document.getElementById('multiplayerBtns').style.display = 'none';
+      document.getElementById('mainGameArea').style.display = 'block';
+      document.getElementById('duetoInfo').style.display = 'block';
+      
+      // Configurar nomes dos jogadores
+      const host = roomData.players.find(p => p.isHost);
+      const guest = roomData.players.find(p => !p.isHost);
+      
+      player1Name = host.name;
+      player2Name = guest.name;
+      
+      document.getElementById('player1NameDisplay').textContent = player1Name;
+      document.getElementById('player2NameDisplay').textContent = player2Name;
+      
+      restartGame();
+      startTimer();
+    }
+
+    // Função para atualizar o estado do jogo no Firebase
+    async function updateGameState(updates) {
+      try {
+        const roomRef = doc(db, "rooms", roomCode);
+        const roomDoc = await getDoc(roomRef);
+        
+        if (!roomDoc.exists()) return;
+        
+        const roomData = roomDoc.data();
+        const currentPlayer = roomData.players.find(p => p.id === userId);
+        
+        if (currentPlayer) {
+          const playerUpdates = {
+            score: currentPlayer.isHost ? player1Score : player2Score,
+            hintsAvailable: hintsAvailable,
+            skipsAvailable: skipsAvailable
+          };
+          
+          await updateDoc(roomRef, {
+            [`players.${roomData.players.indexOf(currentPlayer)}`]: playerUpdates,
+            'gameState': {
+              ...roomData.gameState,
+              ...updates
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar estado do jogo:", error);
+      }
+    }
+
+    // Event Listeners para os botões
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tentar carregar o estado do jogo
+      loadGameState();
+
+      // Verificar conexão
+      checkConnection();
+
+      // Adicionar event listeners aos botões
+      document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+      document.getElementById('restartBtn').addEventListener('click', restartGame);
+      document.getElementById('giveUpBtn').addEventListener('click', giveUp);
+      document.getElementById('noSenseBtn').addEventListener('click', noSense);
+      document.getElementById('secondChanceBtn').addEventListener('click', secondChance);
+      document.getElementById('skipBtn').addEventListener('click', skipQuestion);
+      document.getElementById('hintBtn').addEventListener('click', showHint);
+      document.getElementById('easyBtn').addEventListener('click', () => setDifficulty('easy'));
+      document.getElementById('mediumBtn').addEventListener('click', () => setDifficulty('medium'));
+      document.getElementById('hardBtn').addEventListener('click', () => setDifficulty('hard'));
+      document.getElementById('multiplayerBtn').addEventListener('click', showMultiplayerOptions);
+      document.getElementById('webMultiplayerBtn').addEventListener('click', showWebMultiplayerOptions);
+      document.getElementById('createRoomBtn').addEventListener('click', showCreateRoom);
+      document.getElementById('enterRoomBtn').addEventListener('click', showJoinRoom);
+      document.getElementById('joinRoomBtn').addEventListener('click', joinWebMultiplayer);
+      document.getElementById('copyCodeBtn').addEventListener('click', copyRoomCode);
+      document.getElementById('backToOptionsBtn').addEventListener('click', showMultiplayerOptions);
+      document.getElementById('startGameBtn').addEventListener('click', async () => {
+        const roomRef = doc(db, "rooms", roomCode);
+        await updateDoc(roomRef, {
+          status: 'playing',
+          'gameState.currentQuestion': 0
+        });
+      });
+      
+      // Implementar Bluetooth e Local Network quando necessário
+      document.getElementById('bluetoothMultiplayerBtn').addEventListener('click', () => {
+        alert("Funcionalidade Bluetooth em desenvolvimento!");
+      });
+      
+      document.getElementById('localMultiplayerBtn').addEventListener('click', () => {
+        alert("Funcionalidade Local Network em desenvolvimento!");
+      });
+    });
+
+    // Adicionar ouvinte para salvar o estado antes de fechar a página
+    window.addEventListener('beforeunload', saveGameState);
+  </script>
+</body>
+</html>
